@@ -11,14 +11,15 @@ if __name__ == '__main__':
 
     stream = open("config.yaml", 'r')
     c = yaml.safe_load(stream)
-ct = c['trashhold']
-
-pyautogui.PAUSE = c['time_intervals']['interval_between_moviments']
+    ct = c['trashhold']
+    pyautogui.PAUSE = c['time_intervals']['interval_between_moviments']
 
 pyautogui.FAILSAFE = True
 hero_clicks = 0
 login_attempts = 0
-
+ct = {
+    'default': 0.8,
+}
 
 
 
@@ -288,6 +289,7 @@ def main():
 
         if now - last["heroes"] > t['send_heroes_for_work'] * 60:
             last["heroes"] = now
+            last["refresh_heroes"] = now
             sys.stdout.write('\nSending heroes to work.')
             refreshHeroes()
             sys.stdout.write("\n")
@@ -317,4 +319,6 @@ def main():
         sys.stdout.flush()
 
         time.sleep(1)
-main()
+
+if __name__ == '__main__':
+    main()

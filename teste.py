@@ -41,22 +41,21 @@ with mss.mss() as sct:
 
 
 orig = img.copy()
-for target in (green_bar):
-    result = cv2.matchTemplate(orig, target,cv2.TM_CCOEFF_NORMED)
-    w = target.shape[1]
-    h = target.shape[0]
+result = cv2.matchTemplate(orig, arrow_img, cv2.TM_CCOEFF_NORMED)
+w = arrow_img.shape[1]
+h = arrow_img.shape[0]
 
-    yloc, xloc = np.where(result >= 0.6)
+yloc, xloc = np.where(result >= 0.6)
 
 
-    rectangles = []
-    for (x, y) in zip(xloc, yloc):
-        rectangles.append([int(x), int(y), int(w), int(h)])
-        rectangles.append([int(x), int(y), int(w), int(h)])
+rectangles = []
+for (x, y) in zip(xloc, yloc):
+    rectangles.append([int(x), int(y), int(w), int(h)])
+    rectangles.append([int(x), int(y), int(w), int(h)])
 
-    rectangles, weights = cv2.groupRectangles(rectangles, 1, 0.2)
+rectangles, weights = cv2.groupRectangles(rectangles, 1, 0.2)
 
-    img = draw_rectangles(img, rectangles)
+img = draw_rectangles(img, rectangles)
 show_image(img)
 cv2.waitKey(0)
 
