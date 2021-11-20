@@ -6,25 +6,23 @@ import time
 import sys
 
 import yaml
-
+global c
+global ct
+c = {}
+ct = {}
 if __name__ == '__main__':
-
     stream = open("config.yaml", 'r')
     c = yaml.safe_load(stream)
     ct = c['trashhold']
     pyautogui.PAUSE = c['time_intervals']['interval_between_moviments']
+else:
+    ct = {
+        'default': 0.8,
+    }
 
 pyautogui.FAILSAFE = True
 hero_clicks = 0
 login_attempts = 0
-ct = {
-    'default': 0.8,
-}
-
-
-
-
-
 
 go_work_img = cv2.imread('targets/go-work.png')
 commom_img = cv2.imread('targets/commom-text.png')
@@ -277,11 +275,11 @@ def main():
     t = c['time_intervals']
 
     last = {
-        "login" : 0,
-        "heroes" : 0,
-        "new_map" : 0,
-        "refresh_heroes" : 0,
-        "f5" : 0
+        "login" : time.time(),
+        "heroes" : time.time(),
+        "new_map" : time.time(),
+        "refresh_heroes" : time.time(),
+        "f5" : time.time()
     }
 
     while True:
@@ -296,7 +294,7 @@ def main():
 
         if now - last["login"] > t['check_for_login'] * 60:
             global login_attempts
-            sys.stdout.write("\nChecking if game has disconnected." + str(login_attempts))
+            sys.stdout.write("\nChecking if game has disconnected.")
             sys.stdout.flush()
             last["login"] = now
             login()
@@ -313,6 +311,11 @@ def main():
             last["refresh_heroes"] = now
             sys.stdout.write('\nRefreshing Heroes Positions.\n')
             refreshHeroesPositions()
+
+        if now - last["f5"] > t['f5'] * 60:
+            last["f5"] = now
+            sys.stdout.write('\nRefreshing page.\n')
+            pyautogui.press('f5')
 
         #clickBtn(teasureHunt)
         sys.stdout.write(".")

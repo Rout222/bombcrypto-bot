@@ -4,10 +4,13 @@
 from cv2 import cv2
 import logging
 import mss
+import pyautogui
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from index import clickBtn
 import time
+#read token from file
+TOKEN = open("./telegram_key.txt", "r").read()
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -20,13 +23,21 @@ coin_img = cv2.imread('targets/coins.png')
 logger = logging.getLogger(__name__)
 
 
-def print(update: Update, context: CallbackContext) -> None:
+def ps(update: Update, context: CallbackContext):
+    print("PS")
     with mss.mss() as sct:
         sct.shot(output='print.png')
+        text = sct.grab(sct.monitors[1])
     update.message.reply_photo(photo=open('print.png', 'rb'))
+    update.message.reply_text("Resolução da imagem" + str(text.size))
 
+def f5(update: Update, context: CallbackContext):
+    print("F5")
+    update.message.reply_text("F5 enviado")
+    pyautogui.press('f5')
 
-def coins(update: Update, context: CallbackContext) -> None:
+def get_c(update: Update, context: CallbackContext):
+    print("Coins")
     if clickBtn(coin_img):
         time.sleep(5)
         with mss.mss() as sct:
@@ -36,15 +47,16 @@ def coins(update: Update, context: CallbackContext) -> None:
     clickBtn(x_img)
 
 
-def main() -> None:
+def main():
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater("2034245054:AAGn-i6I7fTPPFaIqsed1L8uzlWuB4-Ojfw")
+    updater = Updater(TOKEN)
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler("print", print))
-    dispatcher.add_handler(CommandHandler("coins", coins))
+    dispatcher.add_handler(CommandHandler("print", ps))
+    dispatcher.add_handler(CommandHandler("coins", get_c))
+    dispatcher.add_handler(CommandHandler("f5", f5))
     # Start the Bot
     updater.start_polling()
     updater.idle()
