@@ -11,6 +11,7 @@ from index import clickBtn
 import time
 import sys
 from pathlib import Path
+import webbrowser
 
 #read token from file
 TOKEN = open("./telegram_key.txt", "r").read()
@@ -41,6 +42,14 @@ def f5(update: Update, context: CallbackContext):
     pyautogui.press('f5')
     sys.stdout.flush()
 
+def reopen(update: Update, context: CallbackContext):
+    print("Reopen")
+    update.message.reply_text("Reopen enviado")
+    with pyautogui.hold('ctrl'):
+        pyautogui.press(['w'])
+    webbrowser.open('https://app.bombcrypto.io/')
+    sys.stdout.flush()
+
 def get_c(update: Update, context: CallbackContext):
     print("Coins")
     if clickBtn(coin_img):
@@ -63,6 +72,7 @@ def main():
     dispatcher.add_handler(CommandHandler("print", ps))
     dispatcher.add_handler(CommandHandler("coins", get_c))
     dispatcher.add_handler(CommandHandler("f5", f5))
+    dispatcher.add_handler(CommandHandler("reopen", reopen))
     # Start the Bot
     updater.start_polling()
     updater.idle()
