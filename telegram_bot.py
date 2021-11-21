@@ -9,6 +9,9 @@ from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from index import clickBtn
 import time
+import sys
+from pathlib import Path
+
 #read token from file
 TOKEN = open("./telegram_key.txt", "r").read()
 # Enable logging
@@ -28,13 +31,15 @@ def ps(update: Update, context: CallbackContext):
     with mss.mss() as sct:
         sct.shot(output='print.png')
         text = sct.grab(sct.monitors[1])
-    update.message.reply_photo(photo=open('print.png', 'rb'))
+    update.message.reply_photo(photo=Path('print.png').read_bytes())
     update.message.reply_text("Resolução da imagem" + str(text.size))
+    sys.stdout.flush()
 
 def f5(update: Update, context: CallbackContext):
     print("F5")
     update.message.reply_text("F5 enviado")
     pyautogui.press('f5')
+    sys.stdout.flush()
 
 def get_c(update: Update, context: CallbackContext):
     print("Coins")
@@ -42,9 +47,10 @@ def get_c(update: Update, context: CallbackContext):
         time.sleep(5)
         with mss.mss() as sct:
             sct.shot(output='coins.png')
-            update.message.reply_photo(photo=open('coins.png', 'rb'))
+            update.message.reply_photo(photo=Path('coins.png').read_bytes())
 
     clickBtn(x_img)
+    sys.stdout.flush()
 
 
 def main():
