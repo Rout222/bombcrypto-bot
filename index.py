@@ -39,13 +39,13 @@ new_map_btn_img = cv2.imread('targets/new-map.png')
 green_bar = cv2.imread('targets/green-bar.png')
 
 
+sct = mss.mss()
+
 global off_x
 off_x = 0
-with mss.mss() as sct:
-    off_x = 0
-    if(len(sct.monitors) == 3):
-        monitor = sct.monitors[2]
-        off_x = -monitor['width']
+if(len(sct.monitors) == 3):
+    sct.monitors[2]
+    off_x = -monitor['width']
 
 def fun_move(x,y,duration):
     pyautogui.moveTo(x + off_x,y,duration)
@@ -79,14 +79,13 @@ def clickBtn(img,name=None, timeout=3, trashhold = ct['default']):
         return True
 
 def printSreen():
-    with mss.mss() as sct:
-        # The screen part to capture
-        monitor = {"top": 160, "left": 160, "width": 1000, "height": 135}
+    # The screen part to capture
+    monitor = {"top": 160, "left": 160, "width": 1000, "height": 135}
 
-        # Grab the data
-        #sct_img = np.array(sct.grab(monitor))
-        sct_img = np.array(sct.grab(sct.monitors[0]))
-        return sct_img[:,:,:3]
+    # Grab the data
+    #sct_img = np.array(sct.grab(monitor))
+    sct_img = np.array(sct.grab(sct.monitors[0]))
+    return sct_img[:,:,:3]
 
 def positions(target, trashhold=ct['default']):
     img = printSreen()

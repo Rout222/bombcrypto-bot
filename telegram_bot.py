@@ -23,15 +23,15 @@ logging.basicConfig(
 x_img = cv2.imread('targets/x.png')
 coin_img = cv2.imread('targets/coins.png')
 
+sct = mss.mss()
 
 logger = logging.getLogger(__name__)
 
 
 def ps(update: Update, context: CallbackContext):
     print("PS")
-    with mss.mss() as sct:
-        sct.shot(output='print.png')
-        text = sct.grab(sct.monitors[1])
+    sct.shot(output='print.png')
+    text = sct.grab(sct.monitors[1])
     update.message.reply_photo(photo=Path('print.png').read_bytes())
     update.message.reply_text("Resolução da imagem" + str(text.size))
     sys.stdout.flush()
@@ -47,16 +47,15 @@ def reopen(update: Update, context: CallbackContext):
     update.message.reply_text("Reopen enviado")
     with pyautogui.hold('ctrl'):
         pyautogui.press(['w'])
-    webbrowser.open('https://app.bombcrypto.io/')
+    webbrowser.open('https://app.bombcrypto.io/webgl/index.html')
     sys.stdout.flush()
 
 def get_c(update: Update, context: CallbackContext):
     print("Coins")
     if clickBtn(coin_img):
         time.sleep(5)
-        with mss.mss() as sct:
-            sct.shot(output='coins.png')
-            update.message.reply_photo(photo=Path('coins.png').read_bytes())
+        sct.shot(output='coins.png')
+        update.message.reply_photo(photo=Path('coins.png').read_bytes())
 
     clickBtn(x_img)
     sys.stdout.flush()
